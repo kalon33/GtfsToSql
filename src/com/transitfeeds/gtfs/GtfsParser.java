@@ -65,7 +65,7 @@ public class GtfsParser {
             "transfers", "from_stop_index INTEGER, to_stop_index INTEGER, transfer_type TEXT, min_transfer_time TEXT", "from_stop_index,to_stop_index",
             "feed_info", "feed_publisher_name TEXT, feed_publisher_url TEXT, feed_lang TEXT, feed_start_date TEXT, feed_end_date TEXT, feed_version TEXT", "",
             "perimetre_tr_plateforme_stif", "MonitoringRef_ZDE TEXT, reflex_lda_id TEXT, reflex_lda_nom TEXT ,reflex_zdl_id TEXT, reflex_zdl_nom TEXT, reflex_zde_id TEXT, reflex_zde_nom TEXT, gtfs_stop_id TEXT, Lineref TEXT, gtfs_line_name TEXT, codifligne_line_id TEXT, codifligne_line_externalcode TEXT, destination_code TEXT, codifligne_network_name TEXT, gtfs_agency TEXT, opendata_date TEXT, Dispo TEXT, reflex_zde_x TEXT, reflex_zde_y TEXT, xy TEXT", "",
-            "liste_arrets_lignes_tc_idf", "agency_name TEXT, stop_id TEXT, ZDEr_ID_REF_A TEXT, ID_LINE TEXT", "",
+            "liste_arrets_lignes_tc_idf", "agency_name TEXT, stop_id TEXT, ZDEr_ID_REF_A TEXT, ID_LINE TEXT", ""
     };
 
 
