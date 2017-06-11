@@ -1368,7 +1368,7 @@ public class GtfsParser {
                 DataCopierRow row = new DataCopierRow();
                 row.add(csv.get("agency_name"));
                 row.add(csv.get("stop_id"));
-                row.add(csv.get("ZDEr_ID_REF_A));
+                row.add(csv.get("ZDEr_ID_REF_A"));
                 row.add(csv.get("ID_LINE"));
                 
                 row.write(copier, COPY_SEPARATOR);
