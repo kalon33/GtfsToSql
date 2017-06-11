@@ -64,7 +64,8 @@ public class GtfsParser {
             "frequencies", "trip_index INTEGER, start_time TEXT, end_time TEXT, headway_secs TEXT, exact_times TEXT", "trip_index",
             "transfers", "from_stop_index INTEGER, to_stop_index INTEGER, transfer_type TEXT, min_transfer_time TEXT", "from_stop_index,to_stop_index",
             "feed_info", "feed_publisher_name TEXT, feed_publisher_url TEXT, feed_lang TEXT, feed_start_date TEXT, feed_end_date TEXT, feed_version TEXT", "",
-            "perimetre_tr_plateforme_stif", "MonitoringRef_ZDE TEXT, reflex_lda_id TEXT, reflex_lda_nom TEXT ,reflex_zdl_id TEXT, reflex_zdl_nom TEXT, reflex_zde_id TEXT, reflex_zde_nom TEXT, gtfs_stop_id TEXT, Lineref TEXT, gtfs_line_name TEXT, codifligne_line_id TEXT, codifligne_line_externalcode TEXT, destination_code TEXT, codifligne_network_name TEXT, gtfs_agency TEXT, opendata_date TEXT, Dispo TEXT, reflex_zde_x TEXT, reflex_zde_y TEXT, xy TEXT", "" 
+            "perimetre_tr_plateforme_stif", "MonitoringRef_ZDE TEXT, reflex_lda_id TEXT, reflex_lda_nom TEXT ,reflex_zdl_id TEXT, reflex_zdl_nom TEXT, reflex_zde_id TEXT, reflex_zde_nom TEXT, gtfs_stop_id TEXT, Lineref TEXT, gtfs_line_name TEXT, codifligne_line_id TEXT, codifligne_line_externalcode TEXT, destination_code TEXT, codifligne_network_name TEXT, gtfs_agency TEXT, opendata_date TEXT, Dispo TEXT, reflex_zde_x TEXT, reflex_zde_y TEXT, xy TEXT", "",
+            "liste_arrets_lignes_tc_idf", "agency_name TEXT, stop_id TEXT, ZDEr_ID_REF_A TEXT, ID_LINE TEXT", "",
     };
 
 
@@ -253,6 +254,9 @@ public class GtfsParser {
         }
         else if (table.equals("perimetre_tr_plateforme_stif")) {
             return new PerimetreStifRowProcessor();
+        }
+        else if (table.equals("liste_arrets_lignes_tc_idf")) {
+            return new ListeArretsStifRowProcessor();
         }
         throw new Exception("No processor found for " + table);
     }
@@ -1335,7 +1339,42 @@ public class GtfsParser {
             }
         }
     }  
-    
+
+    private class ListeArretsStifRowProcessor extends RowProcessor {
+//        "feed_info", "feed_publisher_name TEXT, feed_publisher_url TEXT, feed_lang TEXT, feed_start_date TEXT, feed_end_date TEXT, feed_version TEXT", "" 
+        
+        @Override
+        public String[] getFields() {
+            String fields[] = { "agency_name", "stop_id", "ZDEr_ID_REF_A", "ID_LINE" };
+            return fields;
+        }
+
+        @Override
+        public String getTableName() {
+            return "liste_arrets_lignes_tc_idf";
+        }
+
+        @Override
+        public void process(CsvReader csv, PreparedStatement insert, CopyIn copier) throws SQLException, IOException {
+            if (copier == null) {
+                int i = 0;
+                insert.setString(++i, csv.get("agency_name"));
+                insert.setString(++i, csv.get("stop_id"));
+                insert.setString(++i, csv.get("ZDEr_ID_REF_A"));
+                insert.setString(++i, csv.get("ID_LINE"));
+
+            }
+            else {
+                DataCopierRow row = new DataCopierRow();
+                row.add(csv.get("agency_name"));
+                row.add(csv.get("stop_id"));
+                row.add(csv.get("ZDEr_ID_REF_A));
+                row.add(csv.get("ID_LINE"));
+                
+                row.write(copier, COPY_SEPARATOR);
+            }
+        }
+    }  
     public void exclude(String filename) {
         mExclude.add(filename);
     }
