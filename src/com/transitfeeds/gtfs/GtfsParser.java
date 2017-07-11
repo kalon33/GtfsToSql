@@ -65,7 +65,8 @@ public class GtfsParser {
             "transfers", "from_stop_index INTEGER, to_stop_index INTEGER, transfer_type TEXT, min_transfer_time TEXT", "from_stop_index,to_stop_index",
             "feed_info", "feed_publisher_name TEXT, feed_publisher_url TEXT, feed_lang TEXT, feed_start_date TEXT, feed_end_date TEXT, feed_version TEXT", "",
             "perimetre_tr_plateforme_stif", "MonitoringRef_ZDE TEXT, reflex_lda_id TEXT, reflex_lda_nom TEXT ,reflex_zdl_id TEXT, reflex_zdl_nom TEXT, reflex_zde_id TEXT, reflex_zde_nom TEXT, gtfs_stop_id TEXT, Lineref TEXT, gtfs_line_name TEXT, codifligne_line_id TEXT, codifligne_line_externalcode TEXT, destination_code TEXT, codifligne_network_name TEXT, gtfs_agency TEXT, opendata_date TEXT, Dispo TEXT, reflex_zde_x TEXT, reflex_zde_y TEXT, xy TEXT", "",
-            "liste_arrets_lignes_tc_idf", "agency_name TEXT, stop_id TEXT, ZDEr_ID_REF_A TEXT, ID_LINE TEXT", ""
+            "liste_arrets_lignes_tc_idf", "agency_name TEXT, stop_id TEXT, ZDEr_ID_REF_A TEXT, ID_LINE TEXT", "",
+            "referentiel_des_lignes_stif", "ID_Line TEXT, ExternalCode_Line TEXT, Name_Line TEXT, ShortName_Line TEXT, TransportMode TEXT, TransportSubmode TEXT, OperatorRef TEXT, OperatorName TEXT, NetworkRef TEXT, NetworkName TEXT, ID_GroupOfLines TEXT, ShortName_GroupOfLines TEXT
     };
 
 
@@ -257,6 +258,9 @@ public class GtfsParser {
         }
         else if (table.equals("liste_arrets_lignes_tc_idf")) {
             return new ListeArretsStifRowProcessor();
+        }
+        else if (table.equals("referentiel_des_lignes_stif")) {
+            return new ListeLignesStifRowProcessor();
         }
         throw new Exception("No processor found for " + table);
     }
@@ -1374,7 +1378,60 @@ public class GtfsParser {
                 row.write(copier, COPY_SEPARATOR);
             }
         }
-    }  
+    }
+    
+    private class ListeLignesStifRowProcessor extends RowProcessor {
+//        "referentiel_des_lignes_stif", "ID_Line TEXT, ExternalCode_Line TEXT, Name_Line TEXT, ShortName_Line TEXT, TransportMode TEXT, TransportSubmode TEXT, OperatorRef TEXT, OperatorName TEXT, NetworkRef TEXT, NetworkName TEXT, ID_GroupOfLines TEXT, ShortName_GroupOfLines TEXT,
+        
+        @Override
+        public String[] getFields() {
+            String fields[] = { "ID_Line", "ExternalCode_Line", "Name_Line", "ShortName_Line", "TransportMode", "TransportSubmode", "OperatorRef", "OperatorName", "NetworkRef", "NetworkName", "ID_GroupOfLine", "ShortName_GroupOfLine" };
+            return fields;
+        }
+
+        @Override
+        public String getTableName() {
+            return "referentiel_des_lignes_stif";
+        }
+
+        @Override
+        public void process(CsvReader csv, PreparedStatement insert, CopyIn copier) throws SQLException, IOException {
+            if (copier == null) {
+                int i = 0;
+                insert.setString(++i, csv.get("ID_Line"));
+                insert.setString(++i, csv.get("ExternalCode_Line"));
+                insert.setString(++i, csv.get("Name_Line"));
+                insert.setString(++i, csv.get("ShortName_Line"));
+                insert.setString(++i, csv.get("TransportMode"));
+                insert.setString(++i, csv.get("TransportSubmode"));
+                insert.setString(++i, csv.get("OperatorRef"));
+                insert.setString(++i, csv.get("OperatorName"));
+                insert.setString(++i, csv.get("NetworkRef"));
+                insert.setString(++i, csv.get("NetworkName"));
+                insert.setString(++i, csv.get("ID_GroupOfLine"));
+                insert.setString(++i, csv.get("ShortName_GroupOfLine"));
+                
+            }
+            else {
+                DataCopierRow row = new DataCopierRow();
+                row.add(csv.get("ID_Line"));
+                row.add(csv.get("ExternalCode_Line"));
+                row.add(csv.get("Name_Line"));
+                row.add(csv.get("ShortName_Line"));
+                row.add(csv.get("TransportMode"));
+                row.add(csv.get("TransportSubmode"));
+                row.add(csv.get("OperatorRef"));
+                row.add(csv.get("OperatorName"));
+                row.add(csv.get("NetworkRef"));
+                row.add(csv.get("NetworkName"));
+                row.add(csv.get("ID_GroupOfLine"));
+                row.add(csv.get("ShortName_GroupOfLine"));
+                
+                row.write(copier, COPY_SEPARATOR);
+            }
+        }
+    } 
+    
     public void exclude(String filename) {
         mExclude.add(filename);
     }
